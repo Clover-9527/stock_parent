@@ -4,6 +4,7 @@ public enum ResponseCode {
     ERROR(0,"操作失败"),
     SUCCESS(1,"操作成功"),
     DATA_ERROR(0,"参数异常"),
+    CAPTCHA_ERROR(0,"验证码错误"),
     NO_RESPONSE_DATA(0,"无响应数据"),
     SYSTEM_VERIFY_CODE_NOT_EMPTY(0,"验证码不能为空"),
     SYSTEM_VERIFY_CODE_ERROR(0,"验证码错误"),

@@ -33,6 +33,7 @@
         <joda-time.version>2.10.5</joda-time.version>
         <google.guava.version>30.0-jre</google.guava.version>
         <hutool.version>5.8.16</hutool.version>
+        <javax.validation.version>2.0.1.Final</javax.validation.version>
     </properties>
     <!--定义依赖版本锁定-->
     <dependencyManagement>
@@ -141,6 +142,12 @@
                 <type>pom</type>
                 <!-- 注意这里是import -->
                 <scope>import</scope>
+            </dependency>
+            <!-- valid注解 -->
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation.version}</version>
             </dependency>
         </dependencies>
 

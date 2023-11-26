@@ -7,6 +7,7 @@ import com.itz.stock.vo.R;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -18,7 +19,7 @@ public class UserController {
 
     /** 登录 */
     @PostMapping("/login")
-    public R<LoginVo> login(@RequestBody LoginDto vo){
+    public R<LoginVo> login(@RequestBody @Valid LoginDto vo){
         return userService.login(vo);
     }
 
