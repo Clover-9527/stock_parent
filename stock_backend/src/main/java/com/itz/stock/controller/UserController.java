@@ -4,23 +4,30 @@ import com.itz.stock.dto.LoginDto;
 import com.itz.stock.service.UserService;
 import com.itz.stock.vo.LoginVo;
 import com.itz.stock.vo.R;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
+    /** 登录 */
     @PostMapping("/login")
     public R<LoginVo> login(@RequestBody LoginDto vo){
         return userService.login(vo);
     }
 
+    /**
+     * 生成验证码
+     */
+    @GetMapping("/captcha")
+    public R<Map> generateCaptcha(){
+        return userService.generateCaptcha();
+    }
 
 }
