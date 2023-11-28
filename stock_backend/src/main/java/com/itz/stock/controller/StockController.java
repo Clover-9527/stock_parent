@@ -1,6 +1,7 @@
 package com.itz.stock.controller;
 
-import com.itz.stock.domain.InnerMarketDomain;
+import com.itz.stock.common.domain.InnerMarketDomain;
+import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.pojo.StockBlockRtInfo;
 import com.itz.stock.pojo.StockBusiness;
 import com.itz.stock.service.StockService;
@@ -35,6 +36,14 @@ public class StockController {
     @GetMapping("/sector/all")
     public R<List<StockBlockRtInfo>> sectorAll(){
         return stockService.sectorAllLimit();
+    }
+
+    /**
+     *  降序查询最新的个股涨幅排数据，取前10条数据
+     */
+    @GetMapping("/stock/increase")
+    public R<List<StockUpdownDomain>> getLastUpDownStocks() {
+        return stockService.getLastUpDownStock();
     }
 }
 

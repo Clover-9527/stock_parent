@@ -1,7 +1,12 @@
 package com.itz.stock.mapper;
 
+import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.pojo.StockRtInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,6 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface StockRtInfoMapper extends BaseMapper<StockRtInfo> {
 
+    List<StockUpdownDomain> getLastUpDownStock(@Param("timePoint") Date timePintlastDate);
 }
 
 

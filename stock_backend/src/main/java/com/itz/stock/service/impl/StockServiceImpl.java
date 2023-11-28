@@ -1,11 +1,13 @@
 package com.itz.stock.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.config.StockInfoConfig;
-import com.itz.stock.domain.InnerMarketDomain;
+import com.itz.stock.common.domain.InnerMarketDomain;
 import com.itz.stock.mapper.StockBlockRtInfoMapper;
 import com.itz.stock.mapper.StockBusinessMapper;
 import com.itz.stock.mapper.StockMarketIndexInfoMapper;
+import com.itz.stock.mapper.StockRtInfoMapper;
 import com.itz.stock.pojo.StockBlockRtInfo;
 import com.itz.stock.pojo.StockBusiness;
 import com.itz.stock.service.StockService;
@@ -29,6 +31,8 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
     private StockInfoConfig stockInfoConfig;
     @Resource
     private StockBlockRtInfoMapper stockBlockRtInfoMapper;
+    @Resource
+    private StockRtInfoMapper stockRtInfoMapper;
 
     @Override
     public List<StockBusiness> findAll() {
@@ -67,6 +71,22 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
             return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
         }
         return R.ok(infos);
+    }
+
+    /**
+     *  降序查询最新的个股涨幅排数据，取前10条数据
+     */
+    @Override
+    public R<List<StockUpdownDomain>> getLastUpDownStock() {
+        //获取最新有效的股票交易时间点精确到分钟）,并转换成java data格式
+        Date lastDate = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        //TODO mock data
+        lastDate = DateTime.parse("2023-11-30 23:20:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm")).toDate();
+        List<StockUpdownDomain> list = stockRtInfoMapper.getLastUpDownStock(lastDate);
+        if (CollectionUtils.isEmpty(list)) {
+            return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
+        }
+        return R.ok(list);
     }
 
 

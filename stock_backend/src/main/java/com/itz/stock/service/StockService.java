@@ -1,7 +1,8 @@
 package com.itz.stock.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.itz.stock.domain.InnerMarketDomain;
+import com.itz.stock.common.domain.InnerMarketDomain;
+import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.pojo.StockBlockRtInfo;
 import com.itz.stock.pojo.StockBusiness;
 import com.itz.stock.vo.R;
@@ -14,4 +15,6 @@ public interface StockService extends IService<StockBusiness> {
     R<List<InnerMarketDomain>> innerIndexAll();
 
     R<List<StockBlockRtInfo>> sectorAllLimit();
+
+    R<List<StockUpdownDomain>> getLastUpDownStock();
 }

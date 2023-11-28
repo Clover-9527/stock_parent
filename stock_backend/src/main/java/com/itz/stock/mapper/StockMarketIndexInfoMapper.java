@@ -1,6 +1,6 @@
 package com.itz.stock.mapper;
 
-import com.itz.stock.domain.InnerMarketDomain;
+import com.itz.stock.common.domain.InnerMarketDomain;
 import com.itz.stock.pojo.StockMarketIndexInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;

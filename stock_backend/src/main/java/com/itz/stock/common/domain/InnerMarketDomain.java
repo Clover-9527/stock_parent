@@ -1,4 +1,4 @@
-package com.itz.stock.domain;
+package com.itz.stock.common.domain;
 
 import lombok.Data;
 

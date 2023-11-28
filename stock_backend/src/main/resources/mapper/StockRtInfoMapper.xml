@@ -24,4 +24,23 @@
         cur_price,max_price,min_price,
         trade_amount,trade_volume
     </sql>
+
+    <select id="getLastUpDownStock" resultType="com.itz.stock.common.domain.StockUpdownDomain">
+        SELECT
+            sbr.company_num                             AS companyNum,
+            sbr.trade_amount                            AS tradeAmt,
+            sbr.label                                   AS CODE,
+            sbr.avg_price                               AS avgPrice,
+            sbr.block_name                              AS NAME,
+            date_format( sbr.cur_time, '%Y%m%d' )       AS curDate,
+            sbr.trade_volume                            AS tradeVol,
+            sbr.updown_rate                             AS updownRate
+        FROM
+            stock_block_rt_info AS sbr
+        WHERE
+            sbr.cur_time = #{lastDate}
+        ORDER BY
+            sbr.trade_volume DESC
+            LIMIT 10;
+    </select>
 </mapper>
