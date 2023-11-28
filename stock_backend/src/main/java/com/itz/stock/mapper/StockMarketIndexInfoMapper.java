@@ -1,7 +1,12 @@
 package com.itz.stock.mapper;
 
+import com.itz.stock.domain.InnerMarketDomain;
 import com.itz.stock.pojo.StockMarketIndexInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,6 +16,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface StockMarketIndexInfoMapper extends BaseMapper<StockMarketIndexInfo> {
 
+    /** 根据大盘id和时间查询大盘信息 */
+    List<InnerMarketDomain> selectByIdsAndDate(@Param("marketsIds") List<String> marketsIds,@Param("timePoint") Date timePoint);
 }
 
 
