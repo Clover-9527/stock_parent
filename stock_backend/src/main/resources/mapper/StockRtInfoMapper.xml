@@ -43,4 +43,23 @@
             sbr.trade_volume DESC
             LIMIT 10;
     </select>
+
+    <select id="getStocksByPage" resultType="com.itz.stock.common.domain.StockUpdownDomain">
+        SELECT
+            sri.trade_amount                                            AS tradeAmt,
+            sri.pre_close_price                                         AS preClosePrice,
+            ( sri.max_price - sri.min_price )/ sri.pre_close_price      AS amplitude,
+            sri.stock_code                                              AS CODE,
+            sri.stock_name                                              AS NAME,
+            DATE_FORMAT( sri.cur_time, '%Y%m%d' )                       AS curDate,
+            sri.trade_volume                                            AS tradeVol,
+            ( sri.cur_price - pre_close_price )/ sri.pre_close_price    AS increase,
+            ( sri.cur_price - pre_close_price )                         AS upDown,
+            sri.cur_price                                               AS tradePrice
+        FROM
+            stock_rt_info AS sri
+        ORDER BY
+            sri.cur_time DESC,
+            upDown DESC
+    </select>
 </mapper>

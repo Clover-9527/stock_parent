@@ -5,6 +5,7 @@ import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.pojo.StockBlockRtInfo;
 import com.itz.stock.pojo.StockBusiness;
 import com.itz.stock.service.StockService;
+import com.itz.stock.vo.PageResult;
 import com.itz.stock.vo.R;
 import org.springframework.web.bind.annotation .GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,5 +46,15 @@ public class StockController {
     public R<List<StockUpdownDomain>> getLastUpDownStocks() {
         return stockService.getLastUpDownStock();
     }
+
+    /**
+     * 分页查询股票数据
+     */
+    @GetMapping("stock/all")
+    public R<PageResult<StockUpdownDomain>> getStocksByPage(Integer page, Integer pageSize) {
+        return stockService.getStocksByPage(page, pageSize);
+    }
+
+
 }
 

@@ -1,6 +1,9 @@
 package com.itz.stock.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.config.StockInfoConfig;
 import com.itz.stock.common.domain.InnerMarketDomain;
@@ -10,8 +13,10 @@ import com.itz.stock.mapper.StockMarketIndexInfoMapper;
 import com.itz.stock.mapper.StockRtInfoMapper;
 import com.itz.stock.pojo.StockBlockRtInfo;
 import com.itz.stock.pojo.StockBusiness;
+import com.itz.stock.pojo.StockRtInfo;
 import com.itz.stock.service.StockService;
 import com.itz.stock.utils.DateTimeUtil;
+import com.itz.stock.vo.PageResult;
 import com.itz.stock.vo.R;
 import com.itz.stock.vo.ResponseCode;
 import org.joda.time.DateTime;
@@ -87,6 +92,26 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
             return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
         }
         return R.ok(list);
+    }
+
+    /**
+     * 分页查询股票数据
+     */
+    @Override
+    public R<PageResult<StockUpdownDomain>> getStocksByPage(Integer page, Integer pageSize) {
+        //设置分页参数
+        PageHelper.startPage(page, pageSize);
+        //查询
+        List<StockUpdownDomain> list = stockRtInfoMapper.getStocksByPage();
+        if (CollectionUtils.isEmpty(list)) {
+            return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
+        }
+        //组装pageInfo对象
+        PageInfo<StockUpdownDomain> pageResult = new PageInfo<>(list);
+
+        //通过上一步创建的pageInfo,来用有参构造创建PageResult对象
+        PageResult<StockUpdownDomain> pagreResult = new PageResult<>(pageResult);
+        return R.ok(pagreResult);
     }
 
 

@@ -17,6 +17,8 @@ import java.util.List;
 public interface StockRtInfoMapper extends BaseMapper<StockRtInfo> {
 
     List<StockUpdownDomain> getLastUpDownStock(@Param("timePoint") Date timePintlastDate);
+
+    List<StockUpdownDomain> getStocksByPage();
 }
 
 
