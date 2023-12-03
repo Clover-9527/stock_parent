@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/quot")
@@ -53,6 +54,14 @@ public class StockController {
     @GetMapping("stock/all")
     public R<PageResult<StockUpdownDomain>> getStocksByPage(Integer page, Integer pageSize) {
         return stockService.getStocksByPage(page, pageSize);
+    }
+
+    /**
+     * 统计T日（最近一次股票交易日）涨停和跌停分时统计
+     */
+    @GetMapping("/stock/updown/count")
+    public R<Map> getStockUpDownCount() {
+        return stockService.getStockUpDownCount();
     }
 
 

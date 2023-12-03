@@ -9,6 +9,7 @@ import com.itz.stock.vo.PageResult;
 import com.itz.stock.vo.R;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StockService extends IService<StockBusiness> {
     List<StockBusiness> findAll();
@@ -20,4 +21,6 @@ public interface StockService extends IService<StockBusiness> {
     R<List<StockUpdownDomain>> getLastUpDownStock();
 
     R<PageResult<StockUpdownDomain>> getStocksByPage(Integer page, Integer pageSize);
+
+    R<Map> getStockUpDownCount();
 }

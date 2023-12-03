@@ -26,7 +26,9 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusiness> implements StockService {
@@ -112,6 +114,30 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
         //通过上一步创建的pageInfo,来用有参构造创建PageResult对象
         PageResult<StockUpdownDomain> pagreResult = new PageResult<>(pageResult);
         return R.ok(pagreResult);
+    }
+
+    /**
+     * 统计T日（最近一次股票交易日）涨停和跌停分时统计
+     */
+    @Override
+    public R<Map> getStockUpDownCount() {
+        //获取开盘时间
+        Date openDateTime = DateTimeUtil.getOpenDate(DateTime.now()).toDate();
+        //获取收盘时间
+        Date closeDateTime = DateTimeUtil.getCloseDate(DateTime.now()).toDate();
+        //TODO mock data
+        openDateTime = DateTime.parse("20231203093000", DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+        closeDateTime = DateTime.parse("20231203143000", DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+        // 用map 集合将数据以键值对形式保存,并封装到list集合中
+        List<Map> upCount = stockRtInfoMapper.getStockUpDownCount(openDateTime, closeDateTime, 1);
+        List<Map> downCount = stockRtInfoMapper.getStockUpDownCount(openDateTime, closeDateTime, 0);
+        //4.组装数据到map
+        HashMap<String, List<Map>> map = new HashMap<>();
+        //封装到 map中
+        map.put("upList", upCount);
+        map.put("downList", downCount);
+        //5.响应
+        return R.ok(map);
     }
 
 

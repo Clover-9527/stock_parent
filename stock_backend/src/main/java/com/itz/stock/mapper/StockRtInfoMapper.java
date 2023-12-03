@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author Administrator
@@ -19,6 +20,10 @@ public interface StockRtInfoMapper extends BaseMapper<StockRtInfo> {
     List<StockUpdownDomain> getLastUpDownStock(@Param("timePoint") Date timePintlastDate);
 
     List<StockUpdownDomain> getStocksByPage();
+
+    List<Map> getStockUpDownCount(@Param("startTime") Date startTime,
+                                  @Param("endTime") Date endTime,
+                                  @Param("flag") int flag);
 }
 
 
