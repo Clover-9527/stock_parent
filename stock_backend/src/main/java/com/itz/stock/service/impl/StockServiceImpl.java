@@ -1,9 +1,11 @@
 package com.itz.stock.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
+import com.itz.stock.common.domain.StockExcelDomain;
 import com.itz.stock.common.domain.StockUpdownDomain;
 import com.itz.stock.config.StockInfoConfig;
 import com.itz.stock.common.domain.InnerMarketDomain;
@@ -13,25 +15,29 @@ import com.itz.stock.mapper.StockMarketIndexInfoMapper;
 import com.itz.stock.mapper.StockRtInfoMapper;
 import com.itz.stock.pojo.StockBlockRtInfo;
 import com.itz.stock.pojo.StockBusiness;
-import com.itz.stock.pojo.StockRtInfo;
 import com.itz.stock.service.StockService;
 import com.itz.stock.utils.DateTimeUtil;
 import com.itz.stock.vo.PageResult;
 import com.itz.stock.vo.R;
 import com.itz.stock.vo.ResponseCode;
+import com.sun.deploy.net.URLEncoder;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusiness> implements StockService {
+public class StockServiceImpl extends ServiceImpl<StockBusinessMapper, StockBusiness> implements StockService {
     @Resource
     private StockMarketIndexInfoMapper stockMarketIndexInfoMapper;
     @Resource
@@ -47,7 +53,9 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
         return list;
     }
 
-    /** 获取最新的A股大盘信息 */
+    /**
+     * 获取最新的A股大盘信息
+     */
     @Override
     public R<List<InnerMarketDomain>> innerIndexAll() {
         //1.获取国内大盘的id集合
@@ -55,10 +63,10 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
         //2.获取最近最新的股票有效交易日
         Date lDate = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
         //mock数据
-        String mockDate="20231126105600";   //TODO后续大盘数据实时拉去，将该行注释掉 传入的日期秒必须为0
+        String mockDate = "20231126105600";   //TODO后续大盘数据实时拉去，将该行注释掉 传入的日期秒必须为0
         lDate = DateTime.parse(mockDate, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
         //3.调用mapper查询指定日期下对应的国内大盘数据
-        List<InnerMarketDomain> maps=stockMarketIndexInfoMapper.selectByIdsAndDate(innerIds,lDate);
+        List<InnerMarketDomain> maps = stockMarketIndexInfoMapper.selectByIdsAndDate(innerIds, lDate);
         //组装响应的额数据
         if (CollectionUtils.isEmpty(maps)) {
             return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
@@ -67,12 +75,12 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
     }
 
     /**
-     *  查获取最新的A股板块数据，以交易总金额降序查询，取前10条数据
+     * 查获取最新的A股板块数据，以交易总金额降序查询，取前10条数据
      */
     @Override
     public R<List<StockBlockRtInfo>> sectorAllLimit() {
         //1.调用mapper接口获取数据
-        List<StockBlockRtInfo> infos=stockBlockRtInfoMapper.sectorAllLimit();
+        List<StockBlockRtInfo> infos = stockBlockRtInfoMapper.sectorAllLimit();
         //2.组装数据
         if (CollectionUtils.isEmpty(infos)) {
             return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
@@ -81,7 +89,7 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
     }
 
     /**
-     *  降序查询最新的个股涨幅排数据，取前10条数据
+     * 降序查询最新的个股涨幅排数据，取前10条数据
      */
     @Override
     public R<List<StockUpdownDomain>> getLastUpDownStock() {
@@ -139,6 +147,45 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper,StockBusin
         //5.响应
         return R.ok(map);
     }
+
+    /**
+     * 涨幅信息导出Excel
+     */
+    @Override
+    public void exportStockInfo(HttpServletResponse response, int page, int pageSize) throws IOException {
+        //1.设置响应数据类型
+        response.setContentType("application/vnd.ms-excel");
+        //2.设置响应数据的编码格式
+        response.setCharacterEncoding("utf-8");
+        //3.设置默认的文件名称
+        // URLEncoder.encode防止中文乱码
+        String fileName = URLEncoder.encode("stockRt", "UTF-8");
+        response.setHeader("content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+        //4.分页查询股票数据
+        PageHelper.startPage(page, pageSize);
+        List<StockUpdownDomain> infos = stockRtInfoMapper.getStocksByPage();
+        // 判断info是否为空
+        if (CollectionUtils.isEmpty(infos)) {
+            R<String> error = R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
+            // 将错误信息转换成json字符串响应前端
+            Gson gson = new Gson();
+            String errorToJason = gson.toJson(error);
+            response.getWriter().write(errorToJason);
+            return;
+        }
+        //将List<StockUpdownDomain> 转换为 List<StockExcelDomain>
+        List<StockExcelDomain> domains = infos.stream().map(info -> {
+            StockExcelDomain domain=new StockExcelDomain();
+            BeanUtils.copyProperties(info,domain);
+            return domain;
+        }).collect(Collectors.toList());
+        //5.数据导出
+        EasyExcel.write(response.getOutputStream(), StockExcelDomain.class)
+                 .sheet("股票数据")
+                 .doWrite(domains);
+    }
+
 
 
 }

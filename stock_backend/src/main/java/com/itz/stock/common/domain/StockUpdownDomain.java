@@ -1,44 +1,34 @@
 package com.itz.stock.common.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Data
 @Builder
 public class StockUpdownDomain {
     /**
-     * 交易量
+     * 股票编码
      */
-   private Long tradeAmt;
+    private String code;
+
+    /**
+     * 名称
+     */
+    private String name;
+
     /**
      * 前收盘价
      */
    private BigDecimal preClosePrice;
+
     /**
-     * 振幅
+     * 当前价格
      */
-   private BigDecimal amplitude;
+    private BigDecimal tradePrice;
+
     /**
-     * 股票编码
-     */
-   private String code;
-    /**
-     * 名称
-     */
-   private String name;
-    /**
-     * 日期
-     */
-   private String curDate;
-    /**
-     * 交易金额
-     */
-   private BigDecimal tradeVol;
-    /**
-     * 张涨跌
+     * 涨跌
      */
    private BigDecimal increase;
 
@@ -46,9 +36,26 @@ public class StockUpdownDomain {
      * 涨幅
      */
    private BigDecimal upDown;
+
     /**
-     * 当前价格
+     * 振幅
      */
-   private BigDecimal tradePrice;
+    private BigDecimal amplitude;
+
+    /**
+     * 交易量
+     */
+    private Long tradeAmt;
+
+    /**
+     * 交易金额
+     */
+    private BigDecimal tradeVol;
+
+    /**
+     * 日期
+     */
+    private String curDate;
+
 
 }

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +24,9 @@ public class StockController {
     @Resource
     private StockService stockService;
 
+    /**
+     *  查询全部数据
+     */
     @GetMapping("/stock/business/all")
     public List<StockBusiness> findAllBusinessInfo(){
         return stockService.findAll();
@@ -64,6 +70,19 @@ public class StockController {
         return stockService.getStockUpDownCount();
     }
 
+    /**
+     * 涨幅信息导出Excel
+     */
+    @GetMapping("/stock/export")
+    public void exportStockInfo(HttpServletResponse response, int page, int pageSize) {
+        try {
+            stockService.exportStockInfo(response, page, pageSize);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
 
