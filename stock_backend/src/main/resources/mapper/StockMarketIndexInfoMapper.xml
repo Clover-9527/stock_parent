@@ -46,4 +46,17 @@
         AND DATE_FORMAT( sml.cur_date, '%Y%m%d' )= DATE_FORMAT(#{lastDate},'%Y%m%d' )
     </select>
 
+    <select id="stockTradeVolCount" resultType="map">
+        select
+            date_format(smi.cur_time,'%Y%m%d%H%i') as time,
+            sum(smi.trade_account) as count
+        from stock_market_index_info as smi
+        where smi.cur_time between #{startTime} and #{endTime}
+            and smi.mark_Id in
+            <foreach collection="marketIds" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        group by time
+    </select>
+
 </mapper>

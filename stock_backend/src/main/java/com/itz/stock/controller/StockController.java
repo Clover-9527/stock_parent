@@ -84,5 +84,14 @@ public class StockController {
         }
     }
 
+    /**
+     * 统计国内A股大盘 T日和 T-1日成交量对比
+     *   如果当前时间不在有效的股票交易日下，则将距离最近的一个时间点作为T日时间查询
+     */
+    @GetMapping("/stock/tradevol")
+    public R<Map> stockTradeVol4InnerMarket() {
+        return stockService.getStockTradeVol();
+    }
+
 }
 

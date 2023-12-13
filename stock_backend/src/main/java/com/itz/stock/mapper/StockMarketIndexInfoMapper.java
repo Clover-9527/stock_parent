@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author Administrator
@@ -18,6 +19,12 @@ public interface StockMarketIndexInfoMapper extends BaseMapper<StockMarketIndexI
 
     /** 根据大盘id和时间查询大盘信息 */
     List<InnerMarketDomain> selectByIdsAndDate(@Param("marketsIds") List<String> marketsIds,@Param("timePoint") Date timePoint);
+
+    /** 根据大盘id和时间统计每分钟的交易量 */
+    List<Map> stockTradeVolCount(@Param("marketIds") List<String> marketIds,
+                                 @Param("startTime") Date startTime ,
+                                 @Param("endTime") Date endTime);
+
 }
 
 

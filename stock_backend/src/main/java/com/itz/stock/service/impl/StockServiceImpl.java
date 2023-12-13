@@ -30,10 +30,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -186,6 +183,53 @@ public class StockServiceImpl extends ServiceImpl<StockBusinessMapper, StockBusi
                  .doWrite(domains);
     }
 
+    /**
+     * 统计国内A股大盘 T日和 T-1日成交量对比
+     *   如果当前时间不在有效的股票交易日下，则将距离最近的一个时间点作为T日时间查询
+     */
+    @Override
+    public R<Map> getStockTradeVol() {
+        //1. 获取最近的股票交易日时间，精确到分钟
+        DateTime curTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date curDayTime = curTime.toDate();
+        //2. 获取开盘时间点
+        DateTime openDate = DateTimeUtil.getOpenDate(curTime);
+        Date openDayTime = openDate.toDate();
+        //3.获取前一天的时间点
+        DateTime preCurTime = DateTimeUtil.getPreviousTradingDay(curTime);
+        Date preTradingDayCurTime = preCurTime.toDate();
+        //4. 获取上一个有效日期开盘时间点
+        DateTime preOpenDate = DateTimeUtil.getOpenDate(preCurTime);
+        Date preTradingDayOpenTime = preOpenDate.toDate();
+
+        //TODO  MOCK DATA
+        String tDateStr = "20231212143000";
+        curDayTime = DateTime.parse(tDateStr, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+        String openDateStr = "20231212093000";
+        openDayTime = DateTime.parse(openDateStr, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+
+        String preTStr = "20231211143000";
+        preTradingDayCurTime = DateTime.parse(preTStr, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+        String openDateStr2 = "20231211093000";
+        preTradingDayOpenTime = DateTime.parse(openDateStr2, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+
+        //5. 分别查询两个交易日的交易量
+        List<Map> currentTradeVol = stockMarketIndexInfoMapper.stockTradeVolCount(stockInfoConfig.getInner(),openDayTime, curDayTime);
+        if (CollectionUtils.isEmpty(currentTradeVol)) {
+            currentTradeVol = new ArrayList<>();
+        }
+        List<Map> preTradeVol = stockMarketIndexInfoMapper.stockTradeVolCount(stockInfoConfig.getInner(),preTradingDayOpenTime, preTradingDayCurTime);
+        if (CollectionUtils.isEmpty(preTradeVol)) {
+            preTradeVol = new ArrayList<>();
+        }
+
+        //6. 封装结果并返回
+        Map<String, List<Map>> map = new HashMap<>();
+        map.put("volList", currentTradeVol);
+        map.put("yesVolList", preTradeVol);
+
+        return R.ok(map);
+    }
 
 
 }
