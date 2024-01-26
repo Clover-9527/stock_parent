@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itz.stock.mapper.StockRtInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.itz.stock.pojo.entity.StockRtInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="stockCode" column="stock_code" jdbcType="CHAR"/>
+            <result property="stockName" column="stock_name" jdbcType="VARCHAR"/>
+            <result property="preClosePrice" column="pre_close_price" jdbcType="DECIMAL"/>
+            <result property="openPrice" column="open_price" jdbcType="DECIMAL"/>
+            <result property="curPrice" column="cur_price" jdbcType="DECIMAL"/>
+            <result property="minPrice" column="min_price" jdbcType="DECIMAL"/>
+            <result property="maxPrice" column="max_price" jdbcType="DECIMAL"/>
+            <result property="tradeAmount" column="trade_amount" jdbcType="BIGINT"/>
+            <result property="tradeVolume" column="trade_volume" jdbcType="DECIMAL"/>
+            <result property="curTime" column="cur_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_code,stock_name,
+        pre_close_price,open_price,cur_price,
+        min_price,max_price,trade_amount,
+        trade_volume,cur_time
+    </sql>
+</mapper>
