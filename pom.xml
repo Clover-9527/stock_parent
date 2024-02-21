@@ -41,7 +41,7 @@
         <spring-boot.version>2.5.3</spring-boot.version>
         <joda-time.version>2.10.5</joda-time.version>
         <google.guava.version>30.0-jre</google.guava.version>
-
+        <cn.hutool>5.8.16</cn.hutool>
     </properties>
 
     <!--定义依赖的版本，不负责依赖的引入，只负责版本的约定-->

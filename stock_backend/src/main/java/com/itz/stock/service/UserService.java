@@ -5,6 +5,8 @@ import com.itz.stock.vo.req.LoginReqVo;
 import com.itz.stock.vo.resp.LoginRespVo;
 import com.itz.stock.vo.resp.R;
 
+import java.util.Map;
+
 public interface UserService {
     /**
      * 根据用户名查询用户信息
@@ -15,4 +17,9 @@ public interface UserService {
      * 用户登录
      */
     R<LoginRespVo> login(LoginReqVo reqVo);
+
+    /**
+     * 生成验证码
+     */
+    R<Map> getCaptchaCode();
 }
